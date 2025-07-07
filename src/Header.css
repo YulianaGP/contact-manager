@@ -1,0 +1,15 @@
+.header {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+}
+
+.header h1 {
+  margin-bottom: var(--space-sm);
+}
+
+.header p {
+  margin: 0;
+  opacity: 0.9;
+}

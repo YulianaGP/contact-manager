@@ -1,0 +1,13 @@
+:root {
+  /* Paleta principal del sitio */
+  --color-primary:   #1e3a8a; /* azul oscuro */
+  --color-secondary: #f9fafb; /* gris muy claro */
+  --color-accent:    #eab308; /* amarillo mostaza */
+
+  /* Extras opcionales */
+  --radius-md: 8px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+}
