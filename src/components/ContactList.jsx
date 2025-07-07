@@ -1,16 +1,27 @@
-import ContactCard from "./ContactCard";
-
-export default function ContactList() {
-  const contacts = [
-    { id: 1, name: "Juan Pérez",   phone: "555‑6789", email: "juan@example.com" },
-    { id: 2, name: "Ana Torres",   phone: "555‑9876", email: "ana@example.com" },
-    { id: 3, name: "Pedro Zapata",   phone: "555‑5432", email: "pedro@example.com" }
-  ];
+// ContactList.jsx
+export default function ContactList({
+  contacts,
+  selectedId,
+  onSelectContact,
+}) {
+  if (!contacts.length) return <p>No hay contactos para mostrar</p>;
 
   return (
     <section>
-      {contacts.map(({ id, ...info }) => (
-        <ContactCard key={id} {...info} />
+      {contacts.map((c) => (
+        <button
+          key={c.id}
+          onClick={() => onSelectContact(c.id)}
+          style={{
+            margin: 4,
+            padding: "4px 8px",
+            border:
+              c.id === selectedId ? "2px solid var(--color-primary)" : "1px solid #ccc",
+            background: c.isFavorite ? "#fff9db" : "#f0f0f0",
+          }}
+        >
+          {c.name} {c.isFavorite ? "⭐" : "☆"}
+        </button>
       ))}
     </section>
   );

@@ -1,0 +1,30 @@
+/* Panel.css  ─ estilos del panel y detalle */
+
+.control-panel {
+  background: var(--color-secondary);
+  border-bottom: 3px solid var(--color-accent);
+  padding: var(--space-md);
+  margin: var(--space-md) auto;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.control-panel h3 {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-primary);
+}
+
+.contact-detail {
+  background: var(--color-secondary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin: var(--space-md) auto;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-detail h2 {
+  margin-top: 0;
+  color: var(--color-primary);
+}
