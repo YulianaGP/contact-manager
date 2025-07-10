@@ -4,7 +4,7 @@ export default function ContactList({
   selectedId,
   onSelectContact,
 }) {
-  if (!contacts.length) return <p>No hay contactos para mostrar</p>;
+  if (!contacts || contacts.length === 0) return <p>No hay contactos para mostrar</p>;
 
   return (
     <section>
