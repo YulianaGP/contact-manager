@@ -1,11 +1,12 @@
 // Clase 2: PASO 1 - Importamos el hook de React (useState)
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import "./Panel.css"; //  💡  ruta relativa a src/
+import "./Panel.css";
 import GestionContactos from "./components/GestionContactos";
 import InformacionContacto from "./components/InformacionContacto";
+import ContactForm from "./components/ContactForm";
 
 export default function App() {
   /* ---------- STATE PRINCIPAL ---------- */
@@ -17,7 +18,7 @@ export default function App() {
 
   const [selectedId, setSelectedId] = useState(1);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [nameContact, setNameContact] = useState("");
+  const [mensajeNotificacion, setMensajeNotificacion] = useState(null);
 
   /* ---------- DERIVADOS ---------- */
   const contactsToShow = showOnlyFavorites
@@ -26,7 +27,56 @@ export default function App() {
 
   const selectedContact = contacts.find((c) => c.id === selectedId);
 
+  const totalFavoritos = contacts.filter(c => c.isFavorite).length;
+
+  // Mostrar mensaje si no hay favoritos y el filtro está activado
+  useEffect(() => {
+    if (showOnlyFavorites && totalFavoritos === 0) {
+      setMensajeNotificacion("⚠️ No hay contactos favoritos");
+    }
+  }, [contacts, showOnlyFavorites]);
+
+
+
   /* ---------- HANDLERS ---------- */
+  function handleAddContact(newContact) {
+  // Comprobar duplicados (por nombre, sin importar mayúsculas)
+  const existe = contacts.some(
+    (c) => c.name.toLowerCase() === newContact.name.trim().toLowerCase()
+  );
+
+  if (existe) {
+    // Mostrar mensaje de error y detener
+    setMensajeNotificacion(`❌ El contacto "${newContact.name}" ya existe`);
+    setTimeout(() => setMensajeNotificacion(null), 3000);
+    return;
+  }
+  
+  const nuevoId = contacts.length + 1;
+
+  const updatedContacts = [
+    ...contacts,
+    {
+      ...newContact,
+      id: nuevoId,
+      isFavorite: false,
+    },
+  ];
+
+  setContacts(updatedContacts);
+
+  // ✅ Seleccionamos automáticamente el nuevo contacto
+  setSelectedId(nuevoId);
+
+  // ✅ Mostramos notificación
+  setMensajeNotificacion(`✅ ${newContact.name} agregado a tus contactos`);
+
+  // ⏳ Ocultamos la notificación después de 3 segundos
+  setTimeout(() => {
+    setMensajeNotificacion(null);
+  }, 3000);
+}
+
   function selectContact(id) {
     const selected = contacts.find((c) => c.id === id);
     if (selected) {
@@ -59,70 +109,37 @@ export default function App() {
     setContacts((prev) => prev.map((c) => ({ ...c, isFavorite: false })));
   }
 
-  const handleChangeContact = (event) => {
-    setNameContact(event.target.value);
-  };
+  function handleNextContact() {
+    if (!contacts.length) return;
 
-  function PhoneInput() {
-    const [telefono, setTelefono] = useState("");
-
-    const handleChangePhone = (event) => {
-      setTelefono(event.target.value);
-    };
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-
-      if (!nameContact || !telefono) {
-        alert("Por favor, completa todos los campos.");
-        return;
-      }
-
-      setContacts((prev) => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          name: nameContact,
-          phone: telefono,
-          email: "nuevo@email.com",
-          isFavorite: false,
-        },
-      ]);
-
-      setNameContact("");
-      setTelefono("");
-    };
-
-    return (
-      <form onSubmit={handleSubmit}>
-        <label>Nombre:</label>
-        <input
-          type="text"
-          value={nameContact}
-          onChange={handleChangeContact}
-          placeholder="Nombre del contacto"
-        />
-
-        <label>Teléfono:</label>
-        <input
-          type="tel"
-          value={telefono}
-          onChange={handleChangePhone}
-          placeholder="Número de teléfono"
-        />
-
-        <button type="submit">Agregar Contacto</button>
-      </form>
-    );
+    const currentIndex = contacts.findIndex((c) => c.id === selectedId);
+    const nextIndex = (currentIndex + 1) % contacts.length;
+    const nextContact = contacts[nextIndex];
+    setSelectedId(nextContact.id);
   }
 
-  /* ---------- RENDER ---------- */
+
   return (
     <div style={{ fontFamily: "Verdana" }}>
-      <Header />
+      <Header totalFavoritos={totalFavoritos} />
 
       <main>
-        <PhoneInput />
+        {mensajeNotificacion && (
+          <div className="notificacion" style={{ 
+            color:
+              mensajeNotificacion.startsWith("✅")
+                ? "green"
+                : mensajeNotificacion.startsWith("❌")
+                ? "red"
+                : "#e69500", // naranja para advertencias
+            fontWeight: "bold", 
+            marginBottom: "1rem" }}>
+            {mensajeNotificacion}
+          </div>
+        )}
+
+        {/* ✅ Enviamos el nuevo handler como prop */}
+        <ContactForm onAddContact={handleAddContact} />
       </main>
 
       <GestionContactos
@@ -140,9 +157,11 @@ export default function App() {
         selectedContact={selectedContact}
         toggleFavorite={toggleFavorite}
         onClearContact={handleClearContact}
+        onNextContact={handleNextContact}
       />
 
       <Footer />
     </div>
   );
 }
+

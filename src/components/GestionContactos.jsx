@@ -1,3 +1,4 @@
+// GestionContador.jsx
 import ContactList from "./ContactList";
 
 export default function GestionContactos({
