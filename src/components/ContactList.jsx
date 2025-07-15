@@ -1,8 +1,20 @@
 // ContactList.jsx
+import "../ContactList.css";
+
+// Función para resaltar coincidencias
+function highlight(text, query) {
+  if (!text || !query) return text;
+  const regex = new RegExp(`(${query})`, "gi");
+  return text.split(regex).map((part, i) =>
+    regex.test(part) ? <mark key={i}>{part}</mark> : part
+  );
+}
+
 export default function ContactList({
   contacts,
   selectedId,
   onSelectContact,
+  busqueda,
 }) {
   if (!contacts || contacts.length === 0) return <p>No hay contactos para mostrar</p>;
 
@@ -28,7 +40,13 @@ export default function ContactList({
             cursor: "pointer"
           }}
         >
-          {c.name} {c.isFavorite ? "⭐" : "☆"}
+          <>
+            {highlight(c.name ?? "", busqueda)}{" "}
+            {highlight(c.phone ?? "", busqueda)}{" "}
+
+            {c.isFavorite ? "⭐" : "☆"}
+          </>
+
         </button>
       ))}
     </section>

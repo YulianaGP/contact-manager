@@ -1,7 +1,7 @@
 import ContactCard from "./ContactCard";
 
 
-export default function InformacionContacto({ selectedContact, toggleFavorite, onClearContact, onNextContact}) {
+export default function InformacionContacto({ selectedContact, toggleFavorite, onClearContact, onNextContact, onDeleteContact}) {
   if (!selectedContact) {
     return (
       <section className="contact-detail">
@@ -18,6 +18,7 @@ export default function InformacionContacto({ selectedContact, toggleFavorite, o
       <ContactCard
         contact={selectedContact}
         onToggleFavorite={toggleFavorite}
+        onDeleteContact={onDeleteContact}
       />
 
       <button onClick={onClearContact} style={{ marginTop: 12 }}>

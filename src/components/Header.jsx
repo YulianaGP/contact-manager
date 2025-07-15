@@ -1,11 +1,11 @@
 // src/Header.jsx
 import "../Header.css";
 
-export default function Header({ totalFavoritos }) {
+export default function Header({ totalContacts, totalFavoritos }) {
   return (
     <header className="header">
       <h1>📞 Contact Manager</h1>
-      <p>⭐ Favoritos: {totalFavoritos}</p>
+      <p>👥 Total: {totalContacts} | ⭐ Favoritos: {totalFavoritos}</p>
     </header>
   );
 }
