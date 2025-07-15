@@ -1,4 +1,4 @@
-// GestionContador.jsx
+// GestionContactos.jsx
 import ContactList from "./ContactList";
 
 export default function GestionContactos({
@@ -10,6 +10,10 @@ export default function GestionContactos({
   resetFavorites,
   selectedId,
   selectContact,
+  busqueda,
+  setBusqueda,
+  orden,
+  setOrden,
 }) {
   return (
     <section className="control-panel">
@@ -26,10 +30,30 @@ export default function GestionContactos({
         Resetear favoritos
       </button>
 
+      <input
+        type="text"
+        placeholder="Buscar por nombre o teléfono"
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+        style={{ marginBottom: "12px", padding: "6px", width: "100%" }}
+      />
+
+      <select
+        value={orden}
+        onChange={(e) => setOrden(e.target.value)}
+        style={{ marginBottom: "12px", padding: "6px", width: "100%" }}
+      >
+        <option value="az">Orden A-Z</option>
+        <option value="za">Orden Z-A</option>
+        <option value="favoritos">Favoritos primero</option>
+        <option value="recientes">Recién agregados</option>
+      </select>
+
       <ContactList
         contacts={contactsToShow}
         selectedId={selectedId}
         onSelectContact={selectContact}
+        busqueda={busqueda}
       />
     </section>
   );
