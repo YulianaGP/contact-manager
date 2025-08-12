@@ -13,7 +13,7 @@ export default function ContactCard({ contact, onToggleFavorite, onDeleteContact
   }
 
   function handleDelete() {
-    const confirmado = confirm(`¿Estás segura de eliminar a ${contact.name}?`);
+    const confirmado = confirm(`¿Estás segura de eliminar a ${contact.fullname}?`);
     if (confirmado) {
       onDeleteContact(contact.id);
     }
@@ -23,12 +23,15 @@ export default function ContactCard({ contact, onToggleFavorite, onDeleteContact
     <div className="contact-card">
       <h3>Contacto Destacado</h3>
       <h4>
-        {contact.name} {contact.isFavorite ? "⭐" : ""}
+        {contact.fullname} {contact.isFavorite ? "⭐" : ""}
       </h4>
 
-      <p>📱 {contact.phone}</p>
+      <p>📱 {contact.phonenumber}</p>
       <p>✉️ {contact.email}</p>
-
+      {contact.type && <p>📂 Tipo: {contact.type}</p>}
+      {contact.company && <p>🏢 Empresa: {contact.company}</p>}
+      {contact.birthday && <p>🎂 Cumpleaños: {contact.birthday}</p>}
+      
       <button onClick={() => onToggleFavorite(contact.id)}>
         {contact.isFavorite ? "Quitar favorito" : "Agregar favorito"}
       </button>

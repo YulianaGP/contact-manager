@@ -15,7 +15,21 @@ export default function ContactList({
   selectedId,
   onSelectContact,
   busqueda,
+  isLoading,
+  error,
+  fetchContacts,
 }) {
+
+    if (isLoading) return <p>Cargando contactos...</p>;
+
+  if (error)
+    return (
+      <div style={{ color: "red" }}>
+        <p>Error al cargar contactos: {error.message}</p>
+        <button onClick={fetchContacts}>Reintentar</button>
+      </div>
+    );
+
   if (!contacts || contacts.length === 0) return <p>No hay contactos para mostrar</p>;
 
   return (
@@ -23,10 +37,12 @@ export default function ContactList({
       {contacts.map((c) => (
         <button
           key={c.id}
-          onClick={() => onSelectContact(c.id)}
+          onClick={() => onSelectContact(Number(c.id))}
           style={{
             margin: 4,
             padding: "4px 8px",
+            width: "100%",
+            textAlign: "left",
             border:
               c.id === selectedId ? "2px solid var(--color-primary)" : "1px solid #ccc",
             background: c.id === selectedId
@@ -40,15 +56,13 @@ export default function ContactList({
             cursor: "pointer"
           }}
         >
-          <>
-            {highlight(c.name ?? "", busqueda)}{" "}
-            {highlight(c.phone ?? "", busqueda)}{" "}
-
-            {c.isFavorite ? "⭐" : "☆"}
-          </>
-
+          <div><strong>{highlight(c.fullname ?? "", busqueda)}</strong> {c.isFavorite ? "⭐" : "☆"}</div>
+          <div>📞 {highlight(c.phonenumber ?? "", busqueda)}</div>
+          {c.type && <div>📂 Tipo: {c.type}</div>}
+          {c.company && <div>🏢 Empresa: {c.company}</div>}
+          {c.birthday && <div>🎂 Cumpleaños: {c.birthday}</div>}
         </button>
-      ))}
+      ))}  
     </section>
   );
 }

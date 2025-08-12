@@ -3,6 +3,9 @@ import ContactList from "./ContactList";
 
 export default function GestionContactos({
   contacts,
+  isLoading,
+  error,
+  fetchContacts,
   contactsToShow,
   showOnlyFavorites,
   toggleFilter,
@@ -51,6 +54,9 @@ export default function GestionContactos({
 
       <ContactList
         contacts={contactsToShow}
+        isLoading={isLoading}
+        error={error}
+        fetchContacts={fetchContacts}
         selectedId={selectedId}
         onSelectContact={selectContact}
         busqueda={busqueda}

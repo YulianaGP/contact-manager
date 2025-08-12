@@ -3,8 +3,8 @@ import { useState, useRef } from "react";
 import "../ContactForm.css";
 
 export default function ContactForm({ onAddContact }) {
-  const [nameContact, setNameContact] = useState("");
-  const [telefono, setTelefono] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [phonenumber, setPhonenumber] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [advertenciaNombre, setAdvertenciaNombre] = useState("");
@@ -13,12 +13,12 @@ export default function ContactForm({ onAddContact }) {
   
   
 
-  const handleChangeContact = (event) => {
-    setNameContact(event.target.value);
+  const handleChangeFullname = (event) => {
+    setFullname(event.target.value);
   };
 
   const handleChangePhone = (event) => {
-    setTelefono(event.target.value);
+    setPhonenumber(event.target.value);
   };
 
   const handleChangeEmail = (event) => {
@@ -28,14 +28,14 @@ export default function ContactForm({ onAddContact }) {
   function validateForm() {
     const newErrors = {};
 
-    if (!nameContact.trim()) {
-      newErrors.name = "El nombre es requerido";
+    if (!fullname.trim()) {
+      newErrors.fullname = "El nombre es requerido";
     }
 
-    if (!telefono.trim()) {
-      newErrors.phone = "El teléfono es requerido";
-    } else if (!/^[\d\s\-\(\)]+$/.test(telefono)) {
-      newErrors.phone = "Formato inválido. Ejemplo: (123) 456-7890";
+    if (!phonenumber.trim()) {
+      newErrors.phonenumber = "El teléfono es requerido";
+    } else if (!/^[\d\s\-\(\)]+$/.test(phonenumber)) {
+      newErrors.phonenumber = "Formato inválido. Ejemplo: (123) 456-7890";
     }
     
     if (!email.trim()) {
@@ -57,21 +57,21 @@ export default function ContactForm({ onAddContact }) {
     setErrors({}); // limpiar errores si todo está bien
 
     const newContact = {
-      name: nameContact,
-      phone: telefono,
-      email: email,
+      fullname,
+      phonenumber,
+      email,
     };
 
     onAddContact(newContact);
 
     // Limpiar campos
-    setNameContact("");
-    setTelefono("");
+    setFullname("");
+    setPhonenumber("");
     setEmail("");
   };
 
    // ✅ Calcular campos completados
-  const camposCompletados = [nameContact, telefono, email].filter(Boolean).length;
+  const camposCompletados = [fullname, phonenumber, email].filter(Boolean).length;
 
   return (
     <form className="contact-form" onSubmit={handleSubmit}>
@@ -81,18 +81,18 @@ export default function ContactForm({ onAddContact }) {
       <input
         id="nuevo-contacto"
         type="text"
-        value={nameContact}
-        onChange={handleChangeContact}
+        value={fullname}
+        onChange={handleChangeFullname}
         placeholder="Nombre del contacto"
         autoComplete="name"
         style={{
-          border: errors.name ? "2px solid red" : "1px solid #ccc",
+          border: errors.fullname ? "2px solid red" : "1px solid #ccc",
           borderRadius: "4px",
           padding: "6px",
           marginBottom: "4px",
         }}
       />
-      {errors.name && <div style={{ color: "red", marginBottom: "4px" }}>{errors.name}</div>}
+      {errors.fullname && <div style={{ color: "red", marginBottom: "4px" }}>{errors.fullname}</div>}
       {advertenciaNombre && <div style={{ color: "#e69500", marginBottom: "4px" }}>{advertenciaNombre}</div>}
 
       <label htmlFor="telefono">Teléfono:</label>
@@ -100,18 +100,18 @@ export default function ContactForm({ onAddContact }) {
         id="telefono"
         type="tel"
         ref={phoneInputRef}
-        value={telefono}
+        value={phonenumber}
         onChange={handleChangePhone}
         placeholder="Número de teléfono"
         autoComplete="tel"
         style={{
-          border: errors.phone ? "2px solid red" : "1px solid #ccc",
+          border: errors.phonenumber ? "2px solid red" : "1px solid #ccc",
           borderRadius: "4px",
           padding: "6px",
           marginBottom: "4px",
         }}
       />
-      {errors.phone && <div style={{ color: "red", marginBottom: "4px" }}>{errors.phone}</div>}
+      {errors.phonenumber && <div style={{ color: "red", marginBottom: "4px" }}>{errors.phonenumber}</div>}
 
       <label htmlFor="email">Email:</label>
       <input
@@ -133,10 +133,10 @@ export default function ContactForm({ onAddContact }) {
       <button
         type="button"
         onClick={() => {
-          const hayDatos = nameContact || telefono || email;
+          const hayDatos = fullname || phonenumber || email;
           if (!hayDatos || confirm("¿Estás segura de que quieres limpiar el formulario?")) {
-            setNameContact("");
-            setTelefono("");
+            setFullname("");
+            setPhonenumber("");
             setEmail("");
             setErrors({});
             setAdvertenciaNombre("");
