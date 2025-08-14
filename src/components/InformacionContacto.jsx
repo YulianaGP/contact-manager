@@ -1,7 +1,14 @@
+// InformacionContacto.jsx
 import ContactCard from "./ContactCard";
 
-
-export default function InformacionContacto({ selectedContact, toggleFavorite, onClearContact, onNextContact, onDeleteContact}) {
+export default function InformacionContacto({
+  selectedContact,
+  toggleFavorite,
+  onClearContact,
+  onNextContact,
+  onDeleteContact,
+  onEditContact, // 👈 Agregado para manejar edición
+}) {
   if (!selectedContact) {
     return (
       <section className="contact-detail">
@@ -26,10 +33,11 @@ export default function InformacionContacto({ selectedContact, toggleFavorite, o
       </button>
 
       <button onClick={onNextContact}>
-          Siguiente contacto
+        Siguiente contacto
       </button>
 
+      {/* 👇 Ahora usa selectedContact y la función pasada como prop */}
+      <button onClick={() => onEditContact(selectedContact)}>✏️ Editar</button>
     </section>
   );
 }
-// This component displays the details of the selected contact and allows toggling its favorite status.

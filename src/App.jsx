@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import "./Panel.css";
 import GestionContactos from "./components/GestionContactos";
 import InformacionContacto from "./components/InformacionContacto";
+import EditContactModal from "./components/EditContactModal"; // 👈 NUEVO
 
 import ContactForm from "./components/ContactForm";
 import "./theme.css"; // Importamos el CSS del tema
@@ -25,7 +26,9 @@ export default function App() {
   const [error, setError] = useState(null);
   const [fetchCount, setFetchCount] = useState(0); 
   const [lastFetchTime, setLastFetchTime] = useState(null);
-  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [contactToEdit, setContactToEdit] = useState(null);
+
   // Modo oscuro
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("theme");
@@ -37,6 +40,48 @@ export default function App() {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [darkMode]);
+
+// 👇 Abre el modal y guarda el contacto a editar
+function handleOpenEdit(contact) {
+  setContactToEdit(contact);
+  setIsEditModalOpen(true);
+}
+
+// 👇 Cierra el modal
+function handleCloseEdit() {
+  setIsEditModalOpen(false);
+  setContactToEdit(null);
+}
+
+// 👇 Guarda los cambios del contacto editado
+function handleSaveEdit(updatedContact) {
+  setContacts(prevContacts =>
+    prevContacts.map(c =>
+      c.id === updatedContact.id ? updatedContact : c
+    )
+  );
+  setIsEditModalOpen(false);
+  setContactToEdit(null);
+}
+
+  async function handleUpdateContact(updatedContact) {
+    try {
+      const updated = await ContactService.updateContact(updatedContact.id, updatedContact);
+
+      setContacts(prev =>
+        prev.map(c => c.id === updated.id ? updated : c)
+      );
+
+      setMensajeNotificacion(`✅ ${updated.fullname} actualizado`);
+      setTimeout(() => setMensajeNotificacion(null), 3000);
+      setIsEditModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      setMensajeNotificacion("❌ No se pudo actualizar el contacto");
+      setTimeout(() => setMensajeNotificacion(null), 3000);
+    }
+  }
+
 
   async function fetchContactsDirectly() {
     setIsLoading(true);
@@ -54,6 +99,7 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
+    console.log("Ejemplo de contacto desde la API:", contacts[0]);
   }
 
 
@@ -317,7 +363,18 @@ return (
       onClearContact={handleClearContact}
       onNextContact={handleNextContact}
       onDeleteContact={handleDeleteContact}
+      onEditContact={handleOpenEdit}
     />
+
+    {isEditModalOpen && (
+      <EditContactModal
+        contact={contactToEdit}
+        onClose={handleCloseEdit}
+        onSave={handleSaveEdit}
+      />
+    )}
+
+
 
     <Footer />
   </div>

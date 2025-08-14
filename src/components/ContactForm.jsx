@@ -1,6 +1,7 @@
 // ContactForm.jsx
 import { useState, useRef } from "react";
 import "../ContactForm.css";
+import { ContactService } from "../services/contactService"; // 👈 Importar Service Layer
 
 export default function ContactForm({ onAddContact }) {
   const [fullname, setFullname] = useState("");
@@ -45,7 +46,7 @@ export default function ContactForm({ onAddContact }) {
     return newErrors;
   }
   
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formErrors = validateForm();
@@ -56,19 +57,31 @@ export default function ContactForm({ onAddContact }) {
 
     setErrors({}); // limpiar errores si todo está bien
 
-    const newContact = {
-      fullname,
-      phonenumber,
-      email,
+    // 🔹 Mapeo de campos del front-end a los que espera la API
+    const contactToSend = {
+      fullname: fullname,
+      phonenumber: phonenumber,
+      email: email,
+      type: "personal", // o el valor que quieras
     };
 
-    onAddContact(newContact);
+    try {
+      // ✅ Guardar en la API usando tu Service Layer
+      const savedContact = await ContactService.createContact(contactToSend);
 
-    // Limpiar campos
-    setFullname("");
-    setPhonenumber("");
-    setEmail("");
+      // ✅ Notificar al padre con lo que devolvió la API
+      onAddContact(savedContact);
+
+      // ✅ Limpiar campos
+      setFullname("");
+      setPhonenumber("");
+      setEmail("");
+    } catch (error) {
+      console.error("Error al agregar contacto:", error);
+      alert("Hubo un problema al guardar el contacto.");
+    }
   };
+
 
    // ✅ Calcular campos completados
   const camposCompletados = [fullname, phonenumber, email].filter(Boolean).length;
