@@ -109,3 +109,13 @@ export class ContactService {
     }
   }
 }
+
+// Traer un contacto por ID
+export async function fetchContactById(id) {
+  const response = await fetch(`${API_URL}/${id}`);
+  if (!response.ok) {
+    throw new Error("Contacto no encontrado");
+  }
+  return await response.json();
+}
+

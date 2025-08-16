@@ -1,5 +1,6 @@
 // ContactForm.jsx
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";  
 import "../ContactForm.css";
 import { ContactService } from "../services/contactService"; // 👈 Importar Service Layer
 
@@ -11,7 +12,7 @@ export default function ContactForm({ onAddContact }) {
   const [advertenciaNombre, setAdvertenciaNombre] = useState("");
 
   const phoneInputRef = useRef();
-  
+  const navigate = useNavigate();  
   
 
   const handleChangeFullname = (event) => {
@@ -59,9 +60,9 @@ export default function ContactForm({ onAddContact }) {
 
     // 🔹 Mapeo de campos del front-end a los que espera la API
     const contactToSend = {
-      fullname: fullname,
-      phonenumber: phonenumber,
-      email: email,
+      fullname,
+      phonenumber,
+      email,
       type: "personal", // o el valor que quieras
     };
 
@@ -72,6 +73,11 @@ export default function ContactForm({ onAddContact }) {
       // ✅ Notificar al padre con lo que devolvió la API
       onAddContact(savedContact);
 
+      // ✅ NAVEGACIÓN PROGRAMÁTICA → redirige a /contact/:id
+      navigate(`/contact/${savedContact.id}`, {
+        state: { message: "¡Contacto creado exitosamente!" }
+      });
+
       // ✅ Limpiar campos
       setFullname("");
       setPhonenumber("");
@@ -81,7 +87,6 @@ export default function ContactForm({ onAddContact }) {
       alert("Hubo un problema al guardar el contacto.");
     }
   };
-
 
    // ✅ Calcular campos completados
   const camposCompletados = [fullname, phonenumber, email].filter(Boolean).length;
