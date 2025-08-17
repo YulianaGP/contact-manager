@@ -37,6 +37,16 @@ export default function ContactsPage() {
     return saved === "dark";
   });
 
+// 🔹 Inicializar contactos desde LocalStorage al cargar la página
+    useEffect(() => {
+        // Intentar cargar contactos desde LocalStorage al iniciar
+        const saved = localStorage.getItem("contacts");
+        if (saved) {
+            setContacts(JSON.parse(saved));
+        }
+    }, []);   // 👈 arreglo vacío -> solo se ejecuta 1 vez cuando se monta el componente
+
+
   // Mismo código (handlers / useEffects / derivados) que ya tenías...
       useEffect(() => {
     const theme = darkMode ? "dark" : "light";
@@ -55,6 +65,58 @@ function handleCloseEdit() {
   setIsEditModalOpen(false);
   setContactToEdit(null);
 }
+
+// 🔹 GUARDAR CONTACTOS EN LOCALSTORAGE
+function handleSaveContacts() {
+  try {
+    const serialized = JSON.stringify(contacts);          // convertimos el array a texto
+    localStorage.setItem("contacts", serialized);         // lo guardamos
+    setMensajeNotificacion("✅ Contactos guardados en LocalStorage");
+    setTimeout(() => setMensajeNotificacion(null), 3000);
+  } catch (error) {
+    console.error("Error al guardar contactos:", error);
+  }
+}
+
+// 🔹 CARGAR CONTACTOS DESDE LOCALSTORAGE
+function handleLoadContacts() {
+  try {
+    const saved = localStorage.getItem("contacts");      // obtenemos lo guardado
+    if (saved) {
+      const parsed = JSON.parse(saved);                  // texto ➝ array
+      setContacts(parsed);                               // actualizamos el estado
+      setMensajeNotificacion("✅ Contactos cargados desde LocalStorage");
+    } else {
+      setMensajeNotificacion("⚠️ No hay contactos guardados");
+    }
+    setTimeout(() => setMensajeNotificacion(null), 3000);
+  } catch (error) {
+    console.error("Error al cargar contactos:", error);
+  }
+}
+
+async function handleSyncContacts() {
+  try {
+    // 1. Traer datos desde la API
+    const dataFromAPI = await ContactService.fetchContacts();
+
+    // 2. Actualizar en pantalla
+    setContacts(dataFromAPI);
+
+    // 3. Guardar también en LocalStorage
+    localStorage.setItem("contacts", JSON.stringify(dataFromAPI));
+
+    // 4. Notificación
+    setMensajeNotificacion("✅ Sincronización exitosa");
+    setTimeout(() => setMensajeNotificacion(null), 3000);
+
+  } catch (error) {
+    console.error("Error al sincronizar:", error);
+    setMensajeNotificacion("❌ No se pudo sincronizar");
+    setTimeout(() => setMensajeNotificacion(null), 3000);
+  }
+}
+
 
 // 👇 Guarda los cambios del contacto editado
 async function handleSaveEdit(updatedContact) {
@@ -326,8 +388,17 @@ const contactsToShow = showOnlyFavorites
         )}
 
         {!isLoading && !contacts.length && (
-          <button onClick={fetchContactsDirectly}>📡 Cargar Contactos</button>
+          <button onClick={fetchContactsDirectly}>📡 Cargar Contactos</button>  
         )}
+
+        {!isLoading && !contacts.length && (
+            <button onClick={fetchContactsDirectly}>📡 Cargar Contactos</button>
+        )}
+        <button onClick={handleSaveContacts}>💾 Guardar Contactos</button>
+        <button onClick={handleLoadContacts}>📥 Cargar Contactos</button>
+        <button onClick={handleSyncContacts}>🔄 Sincronizar Datos</button>
+
+
 
         {isLoading && <div style={{ color: "blue" }}>⏳ Cargando contactos desde la API...</div>}
 
