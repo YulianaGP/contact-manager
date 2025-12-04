@@ -1,6 +1,5 @@
-
 import Copyright from "./Copyright";
-import "../Footer.css";
+
 
 export default function Footer() {
   return (

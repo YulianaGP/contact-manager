@@ -1,6 +1,3 @@
-//  ContactCard.jsx
-import "../ContactCard.css"; // 👈 Importa el CSS
-
 export default function ContactCard({ contact, onToggleFavorite, onDeleteContact }) {
   // Si no hay contacto seleccionado, mostramos un mensaje
   if (!contact) {

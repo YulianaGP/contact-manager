@@ -1,5 +1,4 @@
-// ContactList.jsx
-import "../ContactList.css";
+
 
 // Función para resaltar coincidencias
 function highlight(text, query) {

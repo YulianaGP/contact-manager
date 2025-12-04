@@ -8,8 +8,6 @@ import GestionContactos from "../components/GestionContactos";
 import InformacionContacto from "../components/InformacionContacto";
 import EditContactModal from "../components/EditContactModal";
 import ContactForm from "../components/ContactForm";
-import "../Panel.css";
-import "../theme.css";
 import SplashScreen from "../components/SplashScreen";
 import { useNavigate } from "react-router-dom";
 

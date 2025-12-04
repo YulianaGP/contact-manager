@@ -1,7 +1,6 @@
 // ContactForm.jsx
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";  
-import "../ContactForm.css";
 import { ContactService } from "../services/contactService"; // 👈 Importar Service Layer
 
 export default function ContactForm({ onAddContact }) {
