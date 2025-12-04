@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import { initializeApp } from '../utils/initializer';
 import { ContactService } from "../services/contactService";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import GestionContactos from "../components/GestionContactos";
 import InformacionContacto from "../components/InformacionContacto";
 import EditContactModal from "../components/EditContactModal";
@@ -12,7 +10,7 @@ import SplashScreen from "../components/SplashScreen";
 import { useNavigate } from "react-router-dom";
 
 
-export default function ContactsPage() {
+export default function ContactsPage({ setQuantityContacts, setQuantityFavorites }) {
 
   // 🔹 Todos tus useState y useEffect (copiados tal como estaban en App.jsx):
   const navigate = useNavigate();   // 👈 al inicio del componente
@@ -100,6 +98,8 @@ async function handleSyncContacts() {
 
     // 2. Actualizar en pantalla
     setContacts(dataFromAPI);
+    setQuantityContacts(dataFromAPI.length);
+    setQuantityFavorites(dataFromAPI.filter(c => c.isFavorite).length);
 
     // 3. Guardar también en LocalStorage
     localStorage.setItem("contacts", JSON.stringify(dataFromAPI));
@@ -361,8 +361,6 @@ const contactsToShow = showOnlyFavorites
 
   return (
     <div style={{ fontFamily: "Verdana" }}>
-      <Header totalContacts={contacts.length} totalFavoritos={totalFavoritos} />
-
       <div style={{ textAlign: "right", padding: "1rem" }}>
         <button onClick={() => setDarkMode(!darkMode)}>
           Cambiar a modo {darkMode ? "claro" : "oscuro"}
@@ -453,7 +451,7 @@ const contactsToShow = showOnlyFavorites
         />
       )}
 
-      <Footer />
+      
     </div>
   );
 }
